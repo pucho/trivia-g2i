@@ -1,7 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [questions, setQuestions] = useState([]);
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const {
+        data: { results },
+      } = await axios(
+        "https://opentdb.com/api.php?amount=10&difficulty=hard&type=boolean"
+      );
+      setQuestions(results);
+    };
+    fetchQuestions();
+  }, []);
+
+  console.log(questions);
   return (
     <div className="App">
       <header className="App-header">
