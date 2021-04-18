@@ -2,13 +2,18 @@ import "./App.css";
 import { useState } from "react";
 import axios from "axios";
 import { Question } from "./components/Question";
+import { GameOver } from "./components/GameOver";
 
 function App() {
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [quizLength, setQuizLength] = useState(10);
 
   const getQuestions = () => {
+    console.log("new questions");
     const fetchQuestions = async () => {
       setIsLoading(true);
       setError(false);
@@ -16,9 +21,8 @@ function App() {
         const {
           data: { results },
         } = await axios(
-          "https://opentdb.com/api.php?amount=10&difficulty=hard&type=boolean"
+          `https://opentdb.com/api.php?amount=${quizLength}&difficulty=hard&type=boolean`
         );
-        //encoder &encode=url3986
         setQuestions(results);
         setIsLoading(false);
       } catch (error) {
@@ -28,7 +32,24 @@ function App() {
     fetchQuestions();
   };
 
+  const nextQuestion = (answer) => {
+    if (answer === questions[currentQuestion].correct_answer) {
+      setScore((prevScore) => prevScore + 1);
+      questions[currentQuestion].wasCorrectlyAnswered = true;
+    } else {
+      questions[currentQuestion].wasCorrectlyAnswered = false;
+    }
+    setCurrentQuestion((currentQuestion) => currentQuestion + 1);
+  };
+
+  const gameReset = () => {
+    setScore(0);
+    setCurrentQuestion(0);
+    setQuestions([]);
+  };
+
   const gameStarted = !!questions.length > 0;
+  const gameOver = currentQuestion + 1 > questions.length && gameStarted;
   return (
     <div className="App">
       {!gameStarted && (
@@ -46,7 +67,23 @@ function App() {
           {!error && isLoading && <div>Loading Questions</div>}
         </>
       )}
-      {gameStarted && <Question data={questions[0]} />}
+      {gameStarted && !gameOver && (
+        <>
+          <Question
+            data={questions[currentQuestion]}
+            nextQuestion={nextQuestion}
+          />
+          <div>{`${currentQuestion + 1} of ${quizLength}`}</div>
+        </>
+      )}
+      {gameOver && (
+        <GameOver
+          score={score}
+          quizLength={quizLength}
+          reset={gameReset}
+          questions={questions}
+        />
+      )}
     </div>
   );
 }
