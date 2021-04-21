@@ -1,3 +1,29 @@
+html {
+  background-color: #bfbdbd;
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
 .App {
+  background-color: #194350;
+  color: #ff8882;
+  margin: 0 auto;
+  max-width: 720px;
+  min-width: 320px;
+  padding: 20px;
   text-align: center;
+}
+
+.App.color-blind {
+  background-color: #0072b2;
+  color: #f0e442;
+}
+
+.title {
+  font-size: 26px;
+  margin-top: 0px;
 }

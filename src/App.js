@@ -1,10 +1,15 @@
 import "./App.css";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import { Title } from "./components/Title";
 import { Question } from "./components/Question";
 import { GameOver } from "./components/GameOver";
+import { Button } from "./components/Button";
+
+export const ColorBlindContext = React.createContext(true);
 
 function App() {
+  const [colorBlindMode, setColorBlindMode] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -51,40 +56,44 @@ function App() {
   const gameStarted = !!questions.length > 0;
   const gameOver = currentQuestion + 1 > questions.length && gameStarted;
   return (
-    <div className="App">
-      {!gameStarted && (
-        <>
-          <h1>Welcome to the Trivia Challenge</h1>
-          <div>You will be presented with 10 True or False questions.</div>
-          <div>Can you score 100%</div>
-          <button
-            onClick={() => {
-              getQuestions();
-            }}
-          >
-            {error ? "Reload Questions" : "Start"}
-          </button>
-          {!error && isLoading && <div>Loading Questions</div>}
-        </>
-      )}
-      {gameStarted && !gameOver && (
-        <>
-          <Question
-            data={questions[currentQuestion]}
-            nextQuestion={nextQuestion}
+    <ColorBlindContext.Provider value={colorBlindMode}>
+      <div className={`App ${colorBlindMode && "color-blind"}`}>
+        {!gameStarted && (
+          <>
+            <Title>Welcome to the Trivia Challenge</Title>
+            <div className="content">
+              <div>You will be presented with 10 True or False questions.</div>
+              <div>Can you score 100%</div>
+            </div>
+            <Button
+              onClick={() => {
+                getQuestions();
+              }}
+            >
+              {error ? "Reload Questions" : "Begin"}
+            </Button>
+            {!error && isLoading && <div>Loading Questions</div>}
+          </>
+        )}
+        {gameStarted && !gameOver && (
+          <>
+            <Question
+              data={questions[currentQuestion]}
+              nextQuestion={nextQuestion}
+            />
+            <div>{`${currentQuestion + 1} of ${quizLength}`}</div>
+          </>
+        )}
+        {gameOver && (
+          <GameOver
+            score={score}
+            quizLength={quizLength}
+            reset={gameReset}
+            questions={questions}
           />
-          <div>{`${currentQuestion + 1} of ${quizLength}`}</div>
-        </>
-      )}
-      {gameOver && (
-        <GameOver
-          score={score}
-          quizLength={quizLength}
-          reset={gameReset}
-          questions={questions}
-        />
-      )}
-    </div>
+        )}
+      </div>
+    </ColorBlindContext.Provider>
   );
 }
 
