@@ -1,34 +1,43 @@
-import "./GameOver.scss";
-import { Button } from "../components/Button";
-import { Title } from "../components/Title";
+import { Button, Text, Box, Flex } from "@chakra-ui/react";
 
-import { ReactComponent as CheckMark } from "../assets/check.svg";
-import { ReactComponent as Close } from "../assets/close.svg";
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 
 export const GameOver = ({ score, quizLength, reset, questions }) => {
   return (
-    <div className="container">
-      <Title>You scored</Title>
-      <div>{`${score} / ${quizLength}`}</div>
-      <div>
+    <Flex flexDirection="column" alignItems="center">
+      <Text fontSize="3xl">You scored</Text>
+      <Box>{`${score} out of ${quizLength}`}</Box>
+      <Box>
         {questions.map((question, index) => {
           return (
-            <div key={index} className="question">
-              <div>
+            <Flex key={index} marginBottom={4}>
+              <Box>
                 {question.wasCorrectlyAnswered ? (
-                  <CheckMark height={24} width={24} fill="#cc79a7" />
+                  <CheckIcon
+                    height={6}
+                    width={6}
+                    color="green.300"
+                    marginRight={2}
+                  />
                 ) : (
-                  <Close height={22} width={22} fill="#cc79a7" />
+                  <CloseIcon
+                    height={6}
+                    width={6}
+                    color="red.300"
+                    marginRight={2}
+                  />
                 )}
-              </div>
-              <div
+              </Box>
+              <Box
                 dangerouslySetInnerHTML={{ __html: question.question }}
-              ></div>
-            </div>
+              ></Box>
+            </Flex>
           );
         })}
-      </div>
-      <Button onClick={reset}>Play Again?</Button>
-    </div>
+      </Box>
+      <Button colorScheme="green" onClick={reset}>
+        Play Again?
+      </Button>
+    </Flex>
   );
 };

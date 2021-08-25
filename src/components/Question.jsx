@@ -1,5 +1,4 @@
-import { Button } from "../components/Button";
-import { Title } from "../components/Title";
+import { Button, Text, Box } from "@chakra-ui/react";
 
 export const Question = ({ data, nextQuestion }) => {
   //TODO html parser, sanitize maybe?
@@ -7,12 +6,25 @@ export const Question = ({ data, nextQuestion }) => {
 
   return (
     <>
-      <Title>{category}</Title>
-      <div dangerouslySetInnerHTML={{ __html: question }}></div>
-      <div>
-        <Button onClick={() => nextQuestion("True")}>True</Button>
-        <Button onClick={() => nextQuestion("False")}>False</Button>
-      </div>
+      <Text fontSize="3xl">{category}</Text>
+      <Box dangerouslySetInnerHTML={{ __html: question }} flex="0.5"></Box>
+      <Box>
+        <Button
+          colorScheme="blackAlpha"
+          onClick={() => nextQuestion("True")}
+          mr={4}
+          w={24}
+        >
+          True
+        </Button>
+        <Button
+          colorScheme="blackAlpha"
+          onClick={() => nextQuestion("False")}
+          w={24}
+        >
+          False
+        </Button>
+      </Box>
     </>
   );
 };

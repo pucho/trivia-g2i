@@ -1,24 +1,23 @@
-import "./App.css";
 import React, { useState } from "react";
 import axios from "axios";
-import { Title } from "./components/Title";
 import { Question } from "./components/Question";
 import { GameOver } from "./components/GameOver";
-import { Button } from "./components/Button";
+import { Box, Container, Button, Text, Flex } from "@chakra-ui/react";
+import { ChakraProvider } from "@chakra-ui/react";
 
 export const ColorBlindContext = React.createContext(true);
 
 function App() {
-  const [colorBlindMode, setColorBlindMode] = useState(false);
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
+
+  // TODO quiz could be user configurable
   const [quizLength, setQuizLength] = useState(10);
 
   const getQuestions = () => {
-    console.log("new questions");
     const fetchQuestions = async () => {
       setIsLoading(true);
       setError(false);
@@ -55,24 +54,39 @@ function App() {
 
   const gameStarted = !!questions.length > 0;
   const gameOver = currentQuestion + 1 > questions.length && gameStarted;
+
   return (
-    <ColorBlindContext.Provider value={colorBlindMode}>
-      <div className={`App ${colorBlindMode && "color-blind"}`}>
+    <ChakraProvider>
+      <Container
+        centerContent
+        maxW="container.lg"
+        minHeight="100vh"
+        justifyContent="space-between"
+        alignContent="center"
+        padding={12}
+        background="gray.300"
+      >
         {!gameStarted && (
           <>
-            <Title>Welcome to the Trivia Challenge</Title>
-            <div className="content">
-              <div>You will be presented with 10 True or False questions.</div>
-              <div>Can you score 100%</div>
-            </div>
-            <Button
-              onClick={() => {
-                getQuestions();
-              }}
-            >
-              {error ? "Reload Questions" : "Begin"}
-            </Button>
-            {!error && isLoading && <div>Loading Questions</div>}
+            <Text fontSize="3xl">Welcome to the Trivia Challenge</Text>
+            <Flex flexDirection="column" alignItems="center">
+              <Text>
+                You will be presented with 10 True or False questions.
+              </Text>
+              <Text>Can you score 100%</Text>
+            </Flex>
+            <Box>
+              <Button
+                onClick={() => {
+                  getQuestions();
+                }}
+                width={36}
+                colorScheme="green"
+                isLoading={isLoading}
+              >
+                {error ? "Reload Questions" : "Begin"}
+              </Button>
+            </Box>
           </>
         )}
         {gameStarted && !gameOver && (
@@ -81,7 +95,7 @@ function App() {
               data={questions[currentQuestion]}
               nextQuestion={nextQuestion}
             />
-            <div>{`${currentQuestion + 1} of ${quizLength}`}</div>
+            <Box>{`${currentQuestion + 1} of ${quizLength}`}</Box>
           </>
         )}
         {gameOver && (
@@ -92,8 +106,8 @@ function App() {
             questions={questions}
           />
         )}
-      </div>
-    </ColorBlindContext.Provider>
+      </Container>
+    </ChakraProvider>
   );
 }
 
