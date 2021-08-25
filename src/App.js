@@ -15,7 +15,8 @@ function App() {
   const [score, setScore] = useState(0);
 
   // TODO quiz could be user configurable
-  const [quizLength, setQuizLength] = useState(10);
+  // const [quizLength, setQuizLength] = useState(10);
+  const quizLength = 10;
 
   const getQuestions = () => {
     const fetchQuestions = async () => {
